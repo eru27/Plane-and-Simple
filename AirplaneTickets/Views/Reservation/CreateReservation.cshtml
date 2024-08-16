@@ -1,0 +1,81 @@
+﻿@using AirplaneTickets.Models.ViewModels
+
+@model CreateReservationViewModel
+
+@{
+    ViewData["Title"] = "Reserve Seats";
+}
+
+<h1>Reserve Seats</h1>
+<hr />
+
+<div class="container">
+    <div class="row">
+        <!-- Flight Information -->
+        <div class="col-md-4">
+            <h3>Flight Information</h3>
+            <dl class="row">
+                <dt class="col-sm-4">Departure</dt>
+                <dd class="col-sm-8">@ViewBag.Flight.Departure</dd>
+
+                <dt class="col-sm-4">Destination</dt>
+                <dd class="col-sm-8">@ViewBag.Flight.Destination</dd>
+
+                <dt class="col-sm-4">Departure Date</dt>
+                <dd class="col-sm-8">@ViewBag.Flight.DepartureDate.ToShortDateString()</dd>
+
+                <dt class="col-sm-4">Connections</dt>
+                <dd class="col-sm-8">@ViewBag.Flight.Connections</dd>
+
+                <dt class="col-sm-4">Available Seats</dt>
+                <dd class="col-sm-8">@ViewBag.Flight.AvailableSeats</dd>
+            </dl>
+        </div>
+
+        <!-- User Information -->
+        <div class="col-md-4">
+            <h3>Passenger Information</h3>
+            <dl class="row">
+                <dt class="col-sm-4">First Name</dt>
+                <dd class="col-sm-8">@ViewBag.User.FirstName</dd>
+
+                <dt class="col-sm-4">Last Name</dt>
+                <dd class="col-sm-8">@ViewBag.User.LastName</dd>
+
+                <dt class="col-sm-4">Email</dt>
+                <dd class="col-sm-8">@ViewBag.User.Email</dd>
+            </dl>
+        </div>
+
+
+        <!-- Reservation Information -->
+        <div class="col-md-4">
+            <h3>Reservation Information</h3>
+            <div class="row">
+                <form asp-action="CreateReservation" method="post">
+                    <input type="hidden" name="UserId" value="@Model.UserId" />
+                    <input type="hidden" name="FlightId" value="@Model.FlightId" />
+                    @if (ViewBag.ErrorMessage != null)
+                    {
+                        <div class="form-group" style="color: red">@ViewBag.ErrorMessage</div>
+                    }
+                    <div class="form-group">
+                        <label asp-for="NumberOfSeats" class="control-label">Number of Seats:</label>
+                        <input asp-for="NumberOfSeats" class="form-control" />
+                        <span asp-validation-for="NumberOfSeats" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group" style="margin-top: 10px">
+                        <button type="submit" class="btn btn-primary">Make a Reservation</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

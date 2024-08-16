@@ -1,0 +1,111 @@
+﻿@model IEnumerable<AirplaneTickets.Models.Entities.Flight>
+
+@{
+    ViewData["Title"] = "Flights";
+}
+
+<h1>Flights</h1>
+<table class="table" style="border-style: solid">
+    <thead>
+        <tr>
+            <th style="text-align: center;">
+                @Html.DisplayNameFor(model => model.Departure)
+            </th>
+            <th style="text-align: center;">
+                @Html.DisplayNameFor(model => model.Destination)
+            </th>
+            <th style="text-align: center;">
+                @Html.DisplayNameFor(model => model.DepartureDate)
+            </th>
+            <th style="text-align: center;">
+                @Html.DisplayNameFor(model => model.Connections)
+            </th>
+            @if (User.IsInRole("Admin") || User.IsInRole("Agent"))
+            {
+                <th style="text-align: center;">
+                    @Html.DisplayNameFor(model => model.TotalSeats)
+                </th>
+            }
+            <th style="text-align: center;">
+                @Html.DisplayNameFor(model => model.AvailableSeats)
+            </th>
+            <th style="text-align: center;"></th>
+            <th style="text-align: center;"></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr style="@((User.IsInRole("Agent") && item.AvailableSeats < 5)? "background-color: beige" : "")">
+                <td>
+                    @Html.DisplayFor(modelItem => item.Departure)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Destination)
+                </td>
+                <td style="text-align: center;">
+                    @Html.DisplayFor(modelItem => item.DepartureDate)
+                </td>
+                <td style="text-align: center;">
+                    @if (item.Connections == 0)
+                    {
+                        <span>-</span>
+                    }
+                    else
+                    {
+                        @Html.DisplayFor(modelItem => item.Connections)
+                    }
+                </td>
+                @if (User.IsInRole("Admin") || User.IsInRole("Agent"))
+                {
+                    <td style="text-align: center;">
+                        @Html.DisplayFor(modelItem => item.TotalSeats)
+                    </td>
+                }
+                <td style="text-align: center;">
+                    @if (item.AvailableSeats == 0)
+                    {
+                        <span>No seats available</span>
+                    }
+                    else
+                    {
+                        @Html.DisplayFor(modelItem => item.AvailableSeats)
+                    }
+                </td>
+                @if (User.IsInRole("Admin") || User.IsInRole("Agent"))
+                {
+                    <td style="text-align: center;">
+                        @if (item.IsCanceled)
+                        {
+                            <span>Canceled</span>
+                        }
+                    </td>
+                }
+                <td style="text-align: center;">
+                    <a asp-action="ShowFlight" asp-route-id="@item.Id">
+                        @{
+                            if (User.IsInRole("Admin"))
+                            {
+                                <text>Details and Manage</text>
+                            }
+                            else if (User.IsInRole("Agent"))
+                            {
+                                <text>Details</text>
+                            }
+                            else
+                            {
+                                <text>Details and Reservations</text>
+                            }
+                        }
+                    </a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

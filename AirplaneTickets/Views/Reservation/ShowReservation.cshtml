@@ -1,0 +1,95 @@
+﻿@using AirplaneTickets.Models.Enums
+
+@model AirplaneTickets.Models.Entities.Reservation
+
+@{
+    ViewData["Title"] = "Reservation Details";
+}
+
+<h2>Reservation Details</h2>
+<hr />
+<div class="container">
+    <div class="row">
+        <!-- User Information -->
+        <div class="col-md-4">
+            <h3>Passenger Information</h3>
+            <dl class="row">
+                <dt class="col-sm-5">@Html.DisplayNameFor(model => model.User.FirstName)</dt>
+                <dd class="col-sm-5">@Html.DisplayFor(model => model.User.FirstName)</dd>
+
+                <dt class="col-sm-5">@Html.DisplayNameFor(model => model.User.LastName)</dt>
+                <dd class="col-sm-5">@Html.DisplayFor(model => model.User.LastName)</dd>
+
+                <dt class="col-sm-5">@Html.DisplayNameFor(model => model.User.Email)</dt>
+                <dd class="col-sm-5">@Html.DisplayFor(model => model.User.Email)</dd>
+            </dl>
+        </div>
+
+        <!-- Flight Information -->
+        <div class="col-md-4">
+            <h3>Flight Information</h3>
+            <dl class="row">
+                <dt class="col-sm-7">@Html.DisplayNameFor(model => model.Flight.Departure)</dt>
+                <dd class="col-sm-5">@Html.DisplayFor(model => model.Flight.Departure)</dd>
+
+                <dt class="col-sm-7">@Html.DisplayNameFor(model => model.Flight.Destination)</dt>
+                <dd class="col-sm-5">@Html.DisplayFor(model => model.Flight.Destination)</dd>
+
+                <dt class="col-sm-7">@Html.DisplayNameFor(model => model.Flight.DepartureDate)</dt>
+                <dd class="col-sm-5">@Html.DisplayFor(model => model.Flight.DepartureDate)</dd>
+
+                <dt class="col-sm-7">@Html.DisplayNameFor(model => model.Flight.Connections)</dt>
+                <dd class="col-sm-5">@Html.DisplayFor(model => model.Flight.Connections)</dd>
+
+                <dt class="col-sm-7">@Html.DisplayNameFor(model => model.Flight.AvailableSeats)</dt>
+                <dd class="col-sm-5">@Html.DisplayFor(model => model.Flight.AvailableSeats)</dd>
+
+                <dt class="col-sm-7">@Html.DisplayNameFor(model => model.Flight.IsCanceled)</dt>
+                <dd class="col-sm-5">
+                    @if (Model.Flight.IsCanceled)
+                    {
+                        <span>Yes</span>
+                    }
+                    else
+                    {
+                        <span>No</span>
+                    }
+                </dd>
+            </dl>
+        </div>
+
+        <!-- Reservation Information -->
+        <div class="col-md-4">
+            <h3>Reservation Information</h3>
+            <dl class="row">
+                <dt class="col-sm-5">@Html.DisplayNameFor(model => model.NumberOfSeats)</dt>
+                <dd class="col-sm-5">@Html.DisplayFor(model => model.NumberOfSeats)</dd>
+
+                <dt class="col-sm-5">@Html.DisplayNameFor(model => model.Status)</dt>
+                <dd class="col-sm-5">@Html.DisplayFor(model => model.Status)</dd>
+            </dl>
+        </div>
+    </div>
+</div>
+
+@if (User.IsInRole("Agent"))
+{
+    <div>
+    @if (ViewBag.ErrorMessage != null)
+    {
+        <div class="form-group" style="color: red">@ViewBag.ErrorMessage</div>
+    }
+    <form asp-action="ChangeReservationStatus" asp-route-newStatus="@ReservationStatus.Confirmed" asp-route-reservationId="@Model.Id" method="post" style="display: inline-block; margin-right: 5px;">
+        <div class="form-group">
+            <button type="submit" class="btn btn-primary" @(Model.Status != ReservationStatus.Pending ? "disabled" : "")>Confirm</button>
+        </div>
+    </form>
+        <form asp-action="ChangeReservationStatus" asp-route-newStatus="@ReservationStatus.Canceled" asp-route-reservationId="@Model.Id" method="post" style="display: inline-block;">
+        <div class="form-group">
+            <button type="submit" class="btn btn-danger" @(Model.Status != ReservationStatus.Pending ? "disabled" : "")>Cancel</button>
+        </div>
+    </form>
+
+
+    </div>
+}

@@ -1,0 +1,41 @@
+﻿@using AirplaneTickets.Models.Enums
+
+@model AirplaneTickets.Models.ViewModels.SearchFlightsViewModel
+
+@{
+    ViewData["Title"] = "Search Flights";
+}
+
+<h1>Search Flights</h1>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="SearchFlights">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Departure" class="control-label"></label>
+                @Html.DropDownListFor(model => model.Departure, new SelectList(Enum.GetValues(typeof(Airport))), new { @class = "form-control" })
+                <span asp-validation-for="Departure" class="text-danger"></span>
+            </div>
+            <div class="form-group" style="margin-top : 7px">
+                <label asp-for="Destination" class="control-label"></label>
+                @Html.DropDownListFor(model => model.Destination, new SelectList(Enum.GetValues(typeof(Airport))), new { @class = "form-control" })
+                <span asp-validation-for="Destination" class="text-danger"></span>
+            </div>
+            <div class="form-group" style="margin-top : 7px">
+                <label asp-for="ConnectingFlights" class="control-label"></label>
+                <input asp-for="ConnectingFlights" type="checkbox" class="form-check-input" />
+                <span asp-validation-for="ConnectingFlights" class="text-danger"></span>
+            </div>
+            <div class="form-group" style="margin-top : 10px">
+                <input type="submit" value="Search" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

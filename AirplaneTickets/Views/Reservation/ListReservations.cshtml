@@ -1,0 +1,66 @@
+﻿@model IEnumerable<AirplaneTickets.Models.Entities.Reservation>
+
+@{
+    ViewData["Title"] = "Reservations";
+}
+
+<h1>All Reservations</h1>
+
+<table class="table" style="border-style: solid">
+    <thead>
+        <tr>
+            <th style="text-align: center;">
+                @Html.DisplayNameFor(model => model.User.FirstName)
+            </th>
+            <th style="text-align: center;">
+                @Html.DisplayNameFor(model => model.User.LastName)
+            </th>
+            <th style="text-align: center;">
+                Flight
+            </th>
+            <th style="text-align: center;">
+                @Html.DisplayNameFor(model => model.NumberOfSeats)
+            </th>
+            @if (User.IsInRole("Agent"))
+            {
+                <th style="text-align: center;">
+                    @Html.DisplayNameFor(model => model.Flight.AvailableSeats)
+                </th>
+            }
+            <th style="text-align: center;">
+                @Html.DisplayNameFor(model => model.Status)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+            @Html.DisplayFor(modelItem => item.User.FirstName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.User.LastName)
+            </td>
+            <td style="text-align: center;">
+                @Html.DisplayFor(modelItem => item.Flight.Departure) -> @Html.DisplayFor(modelItem => item.Flight.Destination)
+            </td>
+            <td style="text-align: center;">
+                @Html.DisplayFor(modelItem => item.NumberOfSeats)
+            </td>
+            @if (User.IsInRole("Agent"))
+            {
+                <td style="text-align: center;">
+                    @Html.DisplayFor(modelItem => item.Flight.AvailableSeats)
+                </td>
+            }
+            <td style="text-align: center;">
+                @Html.DisplayFor(modelItem => item.Status)
+            </td>
+            <td style="text-align: center;">
+                    <a asp-action="ShowReservation" asp-route-id="@item.Id"> @(User.IsInRole("Agent")? "Details and Manage" : "Details")</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

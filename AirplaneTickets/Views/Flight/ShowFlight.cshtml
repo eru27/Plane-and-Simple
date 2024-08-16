@@ -1,0 +1,122 @@
+﻿@model AirplaneTickets.Models.Entities.Flight
+
+@{
+    ViewData["Title"] = "Flight Details";
+}
+
+<h1>Flight details</h1>
+
+<div>
+    <hr />
+    <dl class="row">
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Departure)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Departure)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Destination)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Destination)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.DepartureDate)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.DepartureDate)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Connections)
+        </dt>
+        <dd class = "col-sm-10">
+            @if (Model.Connections == 0)
+            {
+                <span>None</span>
+            }
+            else
+            {
+                @Html.DisplayFor(model => model.Connections)
+            }
+        </dd>
+        @if (User.IsInRole("Admin") || User.IsInRole("Agent"))
+        {
+            <dt class = "col-sm-2">
+                @Html.DisplayNameFor(model => model.TotalSeats)
+            </dt>
+            <dd class = "col-sm-10">
+                @Html.DisplayFor(model => model.TotalSeats)
+            </dd>
+        }
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.AvailableSeats)
+        </dt>
+        <dd class="col-sm-10">
+            @if (Model.AvailableSeats <= 5)
+            {
+                <span style="color: red">@Html.DisplayFor(model => model.AvailableSeats)</span>
+            }
+            else
+            {
+                @Html.DisplayFor(model => model.AvailableSeats)
+            }
+        </dd>
+        @if (User.IsInRole("Admin") || User.IsInRole("Agent"))
+        {
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.IsCanceled)
+            </dt>
+            <dd class="col-sm-10">
+                @if (Model.IsCanceled)
+                {
+                    <span style="color: red">Yes</span>
+                }
+                else
+                {
+                    <span>No</span>
+                }
+            </dd>
+        }
+    </dl>
+</div>
+
+@if (User.IsInRole("Admin"))
+{
+    @if (ViewBag.Error != null)
+    {
+        <div class="form-group" style="color: red">@ViewBag.Message</div>
+    }
+    <div>
+        <form asp-action="CancelFlight" method="post">
+            <input type="hidden" name="id" value="@Model.Id" />
+            <button type="submit" class="btn btn-danger" @(Model.IsCanceled ? "disabled" : "")>Cancel flight</button>
+        </form>
+    </div>
+}
+else if(!User.IsInRole("Agent"))
+{
+    <div>
+        @if (Model.DepartureDate.DayNumber - DateOnly.FromDateTime(DateTime.Now).DayNumber < 3)
+        {
+            <span>You can't reserve seats for this flight because it's too close to the departure date.</span>
+        }
+        else if (Model.AvailableSeats == 0)
+        {
+            <span>There are no available seats for this flight.</span>
+        }
+        else if (Model.IsCanceled)
+        {
+            <span style="color: red">This flight has been canceled.</span>
+        }
+        else
+        {
+            <form asp-controller="Reservation" asp-action="CreateReservation" method="get">
+                <input type="hidden" name="flightId" value="@Model.Id" />
+                <div class="form-group">
+                    <button type="submit" class="btn btn-primary">Reserve Seats</button>
+                </div>
+            </form>
+        }
+    </div>
+}

@@ -1,0 +1,67 @@
+﻿@using AirplaneTickets.Models.Enums
+
+@model AirplaneTickets.Models.ViewModels.CreateAccountViewModel
+
+@{
+    ViewData["Title"] = "Create Account";
+}
+
+<h1>Create Account</h1>
+<hr />
+<div class="row">
+    <div class="col-md-3">
+        <form asp-action="CreateAccount">
+            @if (!ViewData.ModelState.IsValid)
+            {
+                @foreach (var modelStateEntry in ViewData.ModelState.Values)
+                {
+                    foreach (var error in modelStateEntry.Errors)
+                    {
+                        <div class="form-group" style="color: red">@error.ErrorMessage</div>
+                    }
+                }
+            }
+            @if (ViewBag.Message != null)
+            {
+                <div class="form-group" style="color: green">@ViewBag.Message</div>
+            }
+            <div class="form-group">
+                <label asp-for="Type" class="control-label"></label>
+                @Html.DropDownListFor(model => model.Type, new SelectList(Enum.GetValues(typeof(UserAccountType)).Cast<UserAccountType>().Where(role => role != UserAccountType.Admin).ToArray()), "Select User Type", new { @class = "form-control" })
+                <span asp-validation-for="Type" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="FirstName" class="control-label"></label>
+                <input asp-for="FirstName" class="form-control" />
+                <span asp-validation-for="FirstName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="LastName" class="control-label"></label>
+                <input asp-for="LastName" class="form-control" />
+                <span asp-validation-for="LastName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Email" class="control-label"></label>
+                <input asp-for="Email" class="form-control" />
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Password" class="control-label"></label>
+                <input asp-for="Password" class="form-control" />
+                <span asp-validation-for="Password" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ConfirmPassword" class="control-label"></label>
+                <input asp-for="ConfirmPassword" class="form-control" />
+                <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+            </div>
+            <div class="form-group" style="margin-top: 5px">
+                <input type="submit" value="Create Account" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
